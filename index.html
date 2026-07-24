@@ -1,0 +1,571 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <title>this breath</title>
+  <meta name="description" content="One breath in. One breath out. A quiet guide, in your language, free.">
+  <meta name="theme-color" content="#E3EAE7">
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon-192.png" type="image/png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="this breath">
+  
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&family=Karla:wght@400;500&display=swap');
+
+    :root{
+        --fog:#F2F4F3;
+        --fog-deep:#E3EAE7;
+        --ink:#2E3532;
+        --ink-faded:#75817C;
+        --breath:#A9C4BC;
+        --breath-soft:#C6D8D2;
+        --water:#567B71;
+        --line:#CBD6D2;
+    }
+
+    *{ box-sizing:border-box; }
+
+    html,body{ margin:0; padding:0; }
+
+    body{
+        min-height:100dvh;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        background:radial-gradient(120% 60% at 50% 0%, var(--fog-deep) 0%, var(--fog) 55%);
+        color:var(--ink);
+        font-family:'Karla', -apple-system, 'Segoe UI', system-ui, sans-serif;
+        -webkit-font-smoothing:antialiased;
+    }
+
+    .col{
+        width:100%;
+        max-width:34rem;
+        display:flex;
+        flex-direction:column;
+        flex:1;
+        padding:0 1.5rem;
+    }
+
+    /* ——— header: wordmark + the breathing circle ——— */
+
+    .head{
+        position:sticky;
+        top:0;
+        z-index:2;
+        display:flex;
+        flex-direction:column;
+        align-items:center;
+        padding:2.2rem 0 1.1rem;
+        background:linear-gradient(var(--fog-deep) 55%, rgba(242,244,243,0));
+    }
+
+    .mark{
+        font-family:'Lora', Georgia, serif;
+        font-style:italic;
+        font-size:.85rem;
+        letter-spacing:.12em;
+        color:var(--ink-faded);
+        margin-bottom:1.3rem;
+        user-select:none;
+    }
+
+    .circle-wrap{
+        position:relative;
+        width:64px; height:64px;
+        display:grid; place-items:center;
+    }
+    .circle{
+        width:34px; height:34px;
+        border-radius:50%;
+        background:var(--breath);
+        animation:breathe 8s ease-in-out infinite;
+    }
+    .ring{
+        position:absolute; inset:0;
+        border-radius:50%;
+        border:1px solid var(--breath-soft);
+        animation:breathe-ring 8s ease-in-out infinite;
+    }
+    @keyframes breathe{
+        0%,100%{ transform:scale(1); }
+        50%{ transform:scale(1.55); }
+    }
+    @keyframes breathe-ring{
+        0%,100%{ transform:scale(.72); opacity:.55; }
+        50%{ transform:scale(1); opacity:.95; }
+    }
+
+    .wait{
+        height:1.1rem;
+        margin-top:.55rem;
+        font-size:.72rem;
+        letter-spacing:.06em;
+        color:var(--ink-faded);
+        opacity:0;
+        transition:opacity .9s ease .4s;
+        user-select:none;
+    }
+    .wait.on{ opacity:.85; }
+
+    .again{
+        position:fixed;
+        top:1.15rem;
+        inset-inline-end:1.4rem;
+        z-index:3;
+        font-size:.7rem;
+        letter-spacing:.08em;
+        color:var(--ink-faded);
+        background:none; border:none;
+        cursor:pointer;
+        opacity:.55;
+        padding:.3rem;
+        font-family:inherit;
+    }
+    .again:hover{ opacity:1; }
+    .again:focus-visible{
+        outline:1.5px solid var(--water);
+        outline-offset:2px;
+        border-radius:4px;
+        opacity:1;
+    }
+
+    /* ——— conversation ——— */
+
+    .chat{
+        flex:1;
+        display:flex;
+        flex-direction:column;
+        gap:1.7rem;
+        padding:1.2rem 0 1rem;
+    }
+
+    .msg{
+        white-space:pre-line;
+        animation:fade-in .9s ease both;
+        overflow-wrap:break-word;
+    }
+    @keyframes fade-in{
+        from{ opacity:0; transform:translateY(6px); }
+        to{ opacity:1; transform:translateY(0); }
+    }
+
+    .msg.guide{
+        font-family:'Lora', Georgia, serif;
+        font-size:1.08rem;
+        line-height:1.85;
+        color:var(--ink);
+        max-width:95%;
+    }
+
+    .msg.person{
+        align-self:flex-end;
+        text-align:end;
+        font-size:.95rem;
+        line-height:1.6;
+        color:var(--water);
+        max-width:82%;
+    }
+    [dir="rtl"] .msg.person{ align-self:flex-start; }
+
+    .msg.note{
+        align-self:center;
+        text-align:center;
+        font-family:'Lora', Georgia, serif;
+        font-style:italic;
+        font-size:.85rem;
+        color:var(--ink-faded);
+    }
+
+    /* ——— input ——— */
+
+    .foot{
+        position:sticky;
+        bottom:0;
+        padding:1rem 0 calc(1.4rem + env(safe-area-inset-bottom));
+        background:linear-gradient(rgba(242,244,243,0), var(--fog) 42%);
+    }
+    .inputrow{
+        display:flex;
+        align-items:center;
+        gap:.8rem;
+    }
+    .input{
+        flex:1;
+        background:transparent;
+        border:none;
+        border-bottom:1px solid var(--line);
+        padding:.55rem .1rem;
+        font-family:'Karla', -apple-system, system-ui, sans-serif;
+        font-size:1rem; /* 16px — keeps mobile browsers from zooming */
+        color:var(--ink);
+        transition:border-color .4s ease;
+        border-radius:0;
+    }
+    .input::placeholder{ color:var(--ink-faded); opacity:.7; }
+    .input:focus{ outline:none; border-bottom-color:var(--water); }
+
+    .send{
+        width:38px; height:38px;
+        border-radius:50%;
+        border:none;
+        background:var(--water);
+        color:var(--fog);
+        font-size:1rem;
+        cursor:pointer;
+        display:grid; place-items:center;
+        transition:opacity .3s ease, transform .2s ease;
+        flex-shrink:0;
+    }
+    .send:disabled{ opacity:.35; cursor:default; }
+    .send:not(:disabled):hover{ transform:translateY(-1px); }
+    .send:focus-visible{ outline:2px solid var(--ink); outline-offset:2px; }
+
+    @media (prefers-reduced-motion: reduce){
+        .circle,.ring{ animation:none; }
+        .msg{ animation:none; }
+    }
+    </style>
+  </head>
+  <body>
+
+    <button class="again" id="again" type="button"></button>button>
+
+    <div class="col">
+        <header class="head">
+              <div class="mark" id="mark"></div>div>
+              <div class="circle-wrap" aria-hidden="true">
+                      <div class="ring"></div>div>
+                      <div class="circle"></div>div>
+              </div>div>
+              <div class="wait" id="wait"></div>div>
+        </header>header>
+
+        <main class="chat" id="chat" aria-live="polite"></main>main>
+
+        <footer class="foot">
+              <div class="inputrow">
+                      <input class="input" id="input" autocomplete="off" enterkeyhint="send">
+                      <button class="send" id="send" type="button" disabled>↑</button>button>
+              </div>div>
+        </footer>footer>
+    </div>div>
+
+    <script>
+      // ————————————————————————————————————————————————
+      // The wind speaks every language. These are the first words —
+      // spoken before any server is reached, in the person's own tongue.
+      // The guide itself answers in whatever language the person writes.
+      // ————————————————————————————————————————————————
+
+      const STRINGS = {
+          en: {
+                mark: "this breath",
+                first: "Hello. I'm glad you're here.\n\nWe begin with everything you need — and you already have it.\n\nOne breath in… know that it's coming in.\nOne breath out… know that it's going out.\n\nThat's all. That is the whole practice.\n\nWhat did you notice?",
+                placeholder: "what did you notice?",
+                wait: "one breath, while you wait",
+                again: "begin again",
+                slipped: "the thread slipped — one breath, then try again"
+          },
+          es: {
+                mark: "esta respiración",
+                first: "Hola. Me alegra que estés aquí.\n\nEmpezamos con todo lo que necesitas — y ya lo tienes.\n\nUna respiración que entra… sabe que está entrando.\nUna respiración que sale… sabe que está saliendo.\n\nEso es todo. Esa es toda la práctica.\n\n¿Qué notaste?",
+                placeholder: "¿qué notaste?",
+                wait: "una respiración, mientras esperas",
+                again: "empezar de nuevo",
+                slipped: "se soltó el hilo — una respiración, y prueba otra vez"
+          },
+          pt: {
+                mark: "esta respiração",
+                first: "Olá. Que bom que você está aqui.\n\nComeçamos com tudo o que você precisa — e você já tem.\n\nUma respiração entra… saiba que está entrando.\nUma respiração sai… saiba que está saindo.\n\nÉ só isso. Essa é toda a prática.\n\nO que você notou?",
+                placeholder: "o que você notou?",
+                wait: "uma respiração, enquanto espera",
+                again: "começar de novo",
+                slipped: "o fio escapou — uma respiração, e tente de novo"
+          },
+          fr: {
+                mark: "ce souffle",
+                first: "Bonjour. Je suis heureux que tu sois là.\n\nNous commençons avec tout ce qu'il te faut — et tu l'as déjà.\n\nUne inspiration… sache qu'elle entre.\nUne expiration… sache qu'elle sort.\n\nC'est tout. C'est toute la pratique.\n\nQu'as-tu remarqué ?",
+                placeholder: "qu'as-tu remarqué ?",
+                wait: "une respiration, en attendant",
+                again: "recommencer",
+                slipped: "le fil a glissé — une respiration, puis réessaie"
+          },
+          de: {
+                mark: "dieser Atem",
+                first: "Hallo. Schön, dass du da bist.\n\nWir beginnen mit allem, was du brauchst — und du hast es schon.\n\nEin Atemzug herein… wisse, dass er hereinkommt.\nEin Atemzug hinaus… wisse, dass er hinausgeht.\n\nDas ist alles. Das ist die ganze Übung.\n\nWas hast du bemerkt?",
+                placeholder: "was hast du bemerkt?",
+                wait: "ein Atemzug, während du wartest",
+                again: "von vorn beginnen",
+                slipped: "der Faden ist gerissen — ein Atemzug, dann versuch es noch einmal"
+          },
+          it: {
+                mark: "questo respiro",
+                first: "Ciao. Sono felice che tu sia qui.\n\nCominciamo con tutto ciò che ti serve — e ce l'hai già.\n\nUn respiro entra… sappi che sta entrando.\nUn respiro esce… sappi che sta uscendo.\n\nÈ tutto. Questa è tutta la pratica.\n\nCosa hai notato?",
+                placeholder: "cosa hai notato?",
+                wait: "un respiro, mentre aspetti",
+                again: "ricominciare",
+                slipped: "il filo è scivolato — un respiro, poi riprova"
+          },
+          nl: {
+                mark: "deze adem",
+                first: "Hallo. Fijn dat je er bent.\n\nWe beginnen met alles wat je nodig hebt — en je hebt het al.\n\nEén adem in… weet dat hij binnenkomt.\nEén adem uit… weet dat hij naar buiten gaat.\n\nDat is alles. Dat is de hele oefening.\n\nWat merkte je op?",
+                placeholder: "wat merkte je op?",
+                wait: "één adem, terwijl je wacht",
+                again: "opnieuw beginnen",
+                slipped: "de draad glipte weg — één adem, en probeer het opnieuw"
+          },
+          pl: {
+                mark: "ten oddech",
+                first: "Cześć. Cieszę się, że tu jesteś.\n\nZaczynamy od tego, czego potrzebujesz — a już to masz.\n\nJeden wdech… wiedz, że wchodzi.\nJeden wydech… wiedz, że wychodzi.\n\nTo wszystko. To cała praktyka.\n\nCo zauważasz?",
+                placeholder: "co zauważasz?",
+                wait: "jeden oddech, gdy czekasz",
+                again: "zacznij od nowa",
+                slipped: "nić się wymknęła — jeden oddech i spróbuj znowu"
+          },
+          uk: {
+                mark: "цей подих",
+                first: "Привіт. Я радію, що ти тут.\n\nМи починаємо з усього, що тобі потрібно — і воно в тебе вже є.\n\nОдин вдих… знай, що він входить.\nОдин видих… знай, що він виходить.\n\nОце й усе. Це вся практика.\n\nЩо ти помічаєш?",
+                placeholder: "що ти помічаєш?",
+                wait: "один вдих, поки чекаєш",
+                again: "почати знову",
+                slipped: "нитка вислизнула — один вдих, і спробуй ще раз"
+          },
+          ru: {
+                mark: "это дыхание",
+                first: "Привет. Я рад, что ты здесь.\n\nМы начинаем со всего, что тебе нужно — и это у тебя уже есть.\n\nОдин вдох… знай, что он входит.\nОдин выдох… знай, что он выходит.\n\nВот и всё. Это вся практика.\n\nЧто ты замечаешь?",
+                placeholder: "что ты замечаешь?",
+                wait: "один вдох, пока ждёшь",
+                again: "начать заново",
+                slipped: "нить ускользнула — один вдох, и попробуй ещё раз"
+          },
+          tr: {
+                mark: "bu nefes",
+                first: "Merhaba. Burada olmana sevindim.\n\nİhtiyacın olan her şeyle başlıyoruz — ve o zaten sende.\n\nBir nefes içeri… içeri girdiğini bil.\nBir nefes dışarı… dışarı çıktığını bil.\n\nHepsi bu. Bütün pratik bu.\n\nNe fark ettin?",
+                placeholder: "ne fark ettin?",
+                wait: "beklerken bir nefes",
+                again: "yeniden başla",
+                slipped: "ip kaydı — bir nefes al, sonra yeniden dene"
+          },
+          ar: {
+                mark: "هذا النَّفَس",
+                first: "مرحبًا. يسعدني أنك هنا.\n\nنبدأ بكل ما تحتاجه — وهو معك بالفعل.\n\nنَفَسٌ يدخل… اعلم أنه يدخل.\nونَفَسٌ يخرج… اعلم أنه يخرج.\n\nهذا كل شيء. هذه هي الممارسة كلها.\n\nماذا لاحظت؟",
+                placeholder: "ماذا لاحظت؟",
+                wait: "نَفَسٌ واحد، بينما تنتظر",
+                again: "ابدأ من جديد",
+                slipped: "انزلق الخيط — نَفَسٌ واحد، ثم حاول مرة أخرى"
+          },
+          fa: {
+                mark: "این نفس",
+                first: "سلام. خوشحالم که اینجایی.\n\nبا همه‌ی آنچه نیاز داری شروع می‌کنیم — و تو از قبل آن را داری.\n\nیک نفس به درون… بدان که وارد می‌شود.\nیک نفس به بیرون… بدان که خارج می‌شود.\n\nهمین. تمام تمرین همین است.\n\nچه چیزی را متوجه شدی؟",
+                placeholder: "چه متوجه شدی؟",
+                wait: "یک نفس، تا وقتی منتظری",
+                again: "از نو شروع کن",
+                slipped: "رشته از دست رفت — یک نفس، بعد دوباره امتحان کن"
+          },
+          he: {
+                mark: "הנשימה הזאת",
+                first: "שלום. טוב שבאת.\n\nאנחנו מתחילים עם כל מה שצריך — וזה כבר אצלך.\n\nנשימה אחת פנימה… דע שהיא נכנסת.\nנשימה אחת החוצה… דע שהיא יוצאת.\n\nזה הכול. זה כל התרגול.\n\nלְמה שמת לב?",
+                placeholder: "למה שמת לב?",
+                wait: "נשימה אחת, בינתיים",
+                again: "להתחיל מחדש",
+                slipped: "החוט חמק — נשימה אחת, ואז עוד ניסיון"
+          },
+          hi: {
+                mark: "यह साँस",
+                first: "नमस्ते। अच्छा लगा कि आप यहाँ हैं।\n\nहम उसी से शुरू करते हैं जो आपको चाहिए — और वह आपके पास पहले से है।\n\nएक साँस भीतर… जानिए कि वह भीतर आ रही है।\nएक साँस बाहर… जानिए कि वह बाहर जा रही है।\n\nबस इतना ही। यही पूरा अभ्यास है।\n\nआपने क्या महसूस किया?",
+                placeholder: "आपने क्या महसूस किया?",
+                wait: "प्रतीक्षा करते हुए, एक साँस",
+                again: "फिर से शुरू करें",
+                slipped: "धागा छूट गया — एक साँस लें, फिर दोबारा कोशिश करें"
+          },
+          bn: {
+                mark: "এই শ্বাস",
+                first: "নমস্কার। আপনি এখানে এসেছেন, ভালো লাগছে।\n\nআপনার যা দরকার, তা দিয়েই শুরু করি — আর তা আপনার কাছে আগে থেকেই আছে।\n\nএকটি শ্বাস ভেতরে… জানুন, তা ভেতরে আসছে।\nএকটি শ্বাস বাইরে… জানুন, তা বাইরে যাচ্ছে।\n\nব্যস, এটুকুই। এটাই পুরো অনুশীলন।\n\nআপনি কী লক্ষ্য করলেন?",
+                placeholder: "কী লক্ষ্য করলেন?",
+                wait: "অপেক্ষার ফাঁকে, একটি শ্বাস",
+                again: "আবার শুরু করুন",
+                slipped: "সুতোটা ছুটে গেছে — একটি শ্বাস নিন, তারপর আবার চেষ্টা করুন"
+          },
+          id: {
+                mark: "napas ini",
+                first: "Halo. Senang kamu di sini.\n\nKita mulai dengan semua yang kamu butuhkan — dan itu sudah ada padamu.\n\nSatu napas masuk… sadari bahwa ia masuk.\nSatu napas keluar… sadari bahwa ia keluar.\n\nItu saja. Itulah seluruh latihannya.\n\nApa yang kamu rasakan?",
+                placeholder: "apa yang kamu rasakan?",
+                wait: "satu napas, sambil menunggu",
+                again: "mulai lagi",
+                slipped: "benangnya terlepas — tarik satu napas, lalu coba lagi"
+          },
+          vi: {
+                mark: "hơi thở này",
+                first: "Chào bạn. Rất vui vì bạn ở đây.\n\nChúng ta bắt đầu với tất cả những gì bạn cần — và bạn đã có sẵn rồi.\n\nMột hơi thở vào… biết rằng nó đang vào.\nMột hơi thở ra… biết rằng nó đang ra.\n\nChỉ vậy thôi. Đó là toàn bộ việc thực hành.\n\nBạn nhận thấy điều gì?",
+                placeholder: "bạn nhận thấy điều gì?",
+                wait: "một hơi thở, trong lúc chờ",
+                again: "bắt đầu lại",
+                slipped: "sợi chỉ tuột mất — một hơi thở, rồi thử lại nhé"
+          },
+          th: {
+                mark: "ลมหายใจนี้",
+                first: "สวัสดี ดีใจที่คุณมาอยู่ตรงนี้\n\nเราเริ่มด้วยทุกสิ่งที่คุณต้องการ — และคุณมีมันอยู่แล้ว\n\nหายใจเข้าหนึ่งครั้ง… รู้ว่ามันกำลังเข้ามา\nหายใจออกหนึ่งครั้ง… รู้ว่ามันกำลังออกไป\n\nแค่นั้นเอง นั่นคือการฝึกทั้งหมด\n\nคุณสังเกตเห็นอะไรบ้าง",
+                placeholder: "คุณสังเกตเห็นอะไร",
+                wait: "หนึ่งลมหายใจ ระหว่างที่รอ",
+                again: "เริ่มใหม่",
+                slipped: "เส้นด้ายหลุดมือ — หายใจหนึ่งครั้ง แล้วลองใหม่อีกที",
+          },
+          zh: {
+                mark: "这一息",
+                first: "你好。很高兴你来了。\n\n我们从你需要的一切开始——而你已经拥有它。\n\n一次吸气……知道它正在进来。\n一次呼气……知道它正在出去。\n\n就是这样。这就是全部的练习。\n\n你注意到了什么？",
+                placeholder: "你注意到了什么？",
+                wait: "等待时，呼吸一次",
+                again: "重新开始",
+                slipped: "线断了——呼吸一次，再试一次"
+          },
+          ja: {
+                mark: "この呼吸",
+                first: "こんにちは。来てくれてうれしいです。\n\n必要なものはすべて、もうあなたの中にあります。そこから始めましょう。\n\n息をひとつ吸う……入ってくるのを知る。\n息をひとつ吐く……出ていくのを知る。\n\nそれだけです。それが練習のすべてです。\n\n何に気づきましたか？",
+                placeholder: "何に気づきましたか？",
+                wait: "待つあいだに、ひと呼吸",
+                again: "はじめから",
+                slipped: "糸がほどけました——ひと呼吸して、もう一度どうぞ"
+          },
+          ko: {
+                mark: "이 호흡",
+                first: "안녕하세요. 와 주셔서 기뻐요.\n\n필요한 모든 것으로 시작해요 — 그리고 그것은 이미 당신에게 있어요.\n\n숨이 한 번 들어올 때… 들어오고 있음을 알아차리세요.\n숨이 한 번 나갈 때… 나가고 있음을 알아차리세요.\n\n그게 전부예요. 그것이 수련의 전부예요.\n\n무엇을 느끼셨나요?",
+                placeholder: "무엇을 느끼셨나요?",
+                wait: "기다리는 동안, 숨 한 번",
+                again: "다시 시작",
+                slipped: "실을 놓쳤어요 — 숨 한 번 쉬고, 다시 해 보세요"
+          },
+          sw: {
+                mark: "pumzi hii",
+                first: "Habari. Nimefurahi uko hapa.\n\nTunaanza na kila kitu unachohitaji — na tayari unacho.\n\nPumzi moja ndani… jua kwamba inaingia.\nPumzi moja nje… jua kwamba inatoka.\n\nNdivyo hivyo tu. Hiyo ndiyo mazoezi yote.\n\nUliona nini?",
+                placeholder: "uliona nini?",
+                wait: "pumzi moja, unaposubiri",
+                again: "anza upya",
+                slipped: "uzi umeteleza — vuta pumzi moja, kisha jaribu tena"
+          },
+          tl: {
+                mark: "ang hiningang ito",
+                first: "Kumusta. Masaya ako na nandito ka.\n\nSisimulan natin sa lahat ng kailangan mo — at nasa iyo na ito.\n\nIsang paghinga papasok… alamin na ito ay pumapasok.\nIsang paghinga palabas… alamin na ito ay lumalabas.\n\nIyon lang. Iyon na ang buong pagsasanay.\n\nAno ang napansin mo?",
+                placeholder: "ano ang napansin mo?",
+                wait: "isang hininga, habang naghihintay",
+                again: "magsimulang muli",
+                slipped: "nabitawan ang sinulid — isang hininga, saka subukang muli"
+          }
+      };
+
+      const RTL = new Set(["ar", "fa", "he"]);
+
+      function pickLang() {
+          const prefs = navigator.languages || [navigator.language || "en"];
+          for (const tag of prefs) {
+                const primary = String(tag).toLowerCase().split("-")[0];
+                if (STRINGS[primary]) return primary;
+          }
+          return "en";
+      }
+
+      const LANG = pickLang();
+      const T = STRINGS[LANG];
+
+      document.documentElement.lang = LANG;
+      document.documentElement.dir = RTL.has(LANG) ? "rtl" : "ltr";
+      document.title = T.mark;
+
+      // ————————————————————————————————————————————————
+      // The meeting. Nothing is stored — not here, not on the server.
+      // Close the page, and the meeting returns to air.
+      // ————————————————————————————————————————————————
+
+      const chat = document.getElementById("chat");
+      const inputEl = document.getElementById("input");
+      const sendEl = document.getElementById("send");
+      const waitEl = document.getElementById("wait");
+      const againEl = document.getElementById("again");
+      const markEl = document.getElementById("mark");
+
+      markEl.textContent = T.mark;
+      waitEl.textContent = T.wait;
+      againEl.textContent = T.again;
+      inputEl.placeholder = T.placeholder;
+
+      let messages = [];
+      let waiting = false;
+
+      function addMessage(msg) {
+          messages.push(msg);
+          const div = document.createElement("div");
+          div.className =
+                "msg " + (msg.note ? "note" : msg.role === "assistant" ? "guide" : "person");
+          div.textContent = msg.content;
+          chat.appendChild(div);
+          div.scrollIntoView({ behavior: "smooth", block: "end" });
+      }
+
+      function setWaiting(on) {
+          waiting = on;
+          waitEl.classList.toggle("on", on);
+          sendEl.disabled = on || !inputEl.value.trim();
+      }
+
+      function beginAgain() {
+          messages = [];
+          chat.innerHTML = "";
+          setWaiting(false);
+          addMessage({ role: "assistant", content: T.first, seed: true });
+          inputEl.focus();
+      }
+
+      async function send() {
+          const text = inputEl.value.trim();
+          if (!text || waiting) return;
+
+          addMessage({ role: "user", content: text });
+          inputEl.value = "";
+          setWaiting(true);
+
+          const payload = messages
+            .filter((m) => !m.seed && !m.note)
+            .map((m) => ({ role: m.role, content: m.content }));
+
+          try {
+                const res = await fetch("/api/breathe", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ messages: payload, lang: LANG })
+                });
+                const data = await res.json();
+                if (!res.ok || !data.reply) throw new Error(data.error || "empty");
+                addMessage({ role: "assistant", content: data.reply });
+          } catch (err) {
+                addMessage({ role: "assistant", content: T.slipped, note: true });
+          } finally {
+                setWaiting(false);
+                inputEl.focus();
+          }
+      }
+
+      sendEl.addEventListener("click", send);
+      inputEl.addEventListener("input", () => {
+          sendEl.disabled = waiting || !inputEl.value.trim();
+      });
+      inputEl.addEventListener("keydown", (e) => {
+          if (e.key === "Enter" && !e.isComposing) send();
+      });
+      againEl.addEventListener("click", beginAgain);
+
+      beginAgain();
+
+      // The app installs to any home screen, like a real app — because it is one.
+      if ("serviceWorker" in navigator) {
+          window.addEventListener("load", () => {
+                navigator.serviceWorker.register("/sw.js").catch(() => {});
+          });
+      }
+        </script>
+  </body>
+</html>

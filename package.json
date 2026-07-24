@@ -1,0 +1,6 @@
+{
+  "name": "this-breath",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=18" }
+}
